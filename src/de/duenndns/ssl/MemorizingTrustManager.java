@@ -601,7 +601,7 @@ public class MemorizingTrustManager implements X509TrustManager {
 		}
 	}
 
-	void startActivityNotification(Intent intent, int decisionId, String certName) {
+	void startActivityNotification(Intent intent, int decisionId, String message, String shortMessage) {
 		Notification notification;
 		final PendingIntent call = PendingIntent.getActivity(master, 0, intent,
 				0);
@@ -617,14 +617,14 @@ public class MemorizingTrustManager implements X509TrustManager {
 			Notification n  = new Notification(android.R.drawable.ic_lock_lock,
 					mtmNotification,
 					currentMillis);
-			setLatestEventInfoReflective(n, context, mtmNotification, certName, call);
+			setLatestEventInfoReflective(n, context, mtmNotification, message, call);
 			n.flags |= Notification.FLAG_AUTO_CANCEL;
 			notification = n;
 		} else {
 			notification = new Notification.Builder(master)
 					.setContentTitle(mtmNotification)
-					.setContentText(certName)
-					.setTicker(certName)
+					.setContentText(message)
+					.setTicker(shortMessage)
 					.setSmallIcon(android.R.drawable.ic_lock_lock)
 					.setWhen(currentMillis)
 					.setContentIntent(call)
@@ -664,7 +664,7 @@ public class MemorizingTrustManager implements X509TrustManager {
 					getUI().startActivity(ni);
 				} catch (Exception e) {
 					LOGGER.log(Level.FINE, "startActivity(MemorizingActivity)", e);
-					startActivityNotification(ni, myId, message);
+					startActivityNotification(ni, myId, message, master.getString(R.string.mtm_notification) + " - " + master.getString(titleId));
 				}
 			}
 		});
